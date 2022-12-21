@@ -1,0 +1,98 @@
+type Follower @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String
+  userID: ID! @index(name: "byUser")
+}
+
+type Following @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  uploader: String
+  shop: String
+  tag: String
+  userID: ID! @index(name: "byUser")
+}
+
+type Reply @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String
+  name: String
+  content: String
+  isDelete: Boolean
+  isLeave: Boolean
+  commentID: ID! @index(name: "byComment")
+}
+
+type Comment @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String
+  name: String
+  isLeave: Boolean
+  content: String
+  mediaID: ID! @index(name: "byMedia")
+  Replies: [Reply] @hasMany(indexName: "byComment", fields: ["id"])
+  isDelete: Boolean
+}
+
+type Media @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  uploader: String
+  fileNam: String
+  description: String
+  thumbnail: String
+  poster: String
+  isHotOn: Boolean
+  hotCount: Int
+  isCommentOn: Boolean
+  isFixed: Boolean
+  viewCount: Int
+  userID: ID! @index(name: "byUser")
+  Comment: [Comment] @hasMany(indexName: "byMedia", fields: ["id"])
+  name: String
+  shopId: String
+  shopName: String
+  phone: AWSPhone
+}
+
+enum Category {
+  CAFE
+  FOOD
+  BEER
+  GUITAR
+}
+
+type Avater @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  prefix: String
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+type User @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String
+  age: Int
+  gender: Gender
+  instagram: String
+  shortsCount: Int
+  followerCount: Int
+  latitude: String
+  Avater: Avater @hasOne
+  longitude: String
+  category: Category
+  isShop: Boolean
+  isPro: Boolean
+  isTerm: Boolean
+  isPrivacy: Boolean
+  isPush: Boolean
+  isWifi: Boolean
+  businessNumber: String
+  Media: [Media] @hasMany(indexName: "byUser", fields: ["id"])
+  Followings: [Following] @hasMany(indexName: "byUser", fields: ["id"])
+  Followers: [Follower] @hasMany(indexName: "byUser", fields: ["id"])
+  email: AWSEmail
+}
+ 
